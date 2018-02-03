@@ -1,0 +1,142 @@
+    <p>
+  template-ref-demo works! {{isDisplayed}} and {{state}}
+</p>
+
+<div>
+
+  <div>
+    <p>Control Center</p>
+    <button (click)="togleTemplate()">Togle Template in option 1</button>
+
+    <!-- <input type="radio" value="red" name="st"/>
+    <input type="radio" value="green" name="st" checked /> -->
+    <div>
+      <button (click)="setState('normal')">Set Normal State</button>
+      <button (click)="setState('green')">Set Green State</button>
+      <button (click)="setState('red')">Set Red State</button>
+
+    </div>
+  </div>
+ 
+
+option 1: load alternative content in a div when some condition is fulfilled in the *ngIf or *ngSwitch statement 
+<br>  <div *ngIf="!displayLoadingTemplate else myTemplate">
+    It's all good, nothing is being loaded
+  </div>
+ <div>
+<hr>
+<!-- <div>
+    <p>ng-switch used as a condition</p>
+    <div [ngSwitch]="state">
+      <div *ngSwitchCase="red">
+        <ng-container ></ng-container>
+      </div>
+    </div>
+</div> -->
+
+  
+<p>
+    option 2: ng-container sample
+</p>
+<!-- the good thing with ng-container is that it does not require
+some html element in the DOM in order to be target to *ngIf like in the 
+previous case where div element is used and this will always stay in the DOM in ViewSource -->
+<ng-container *ngIf="state === 'normal' else abnormalState">
+you can see me if the state = "normal"
+the contenet of the template will render without introduction of addtional parent element in the DOM
+</ng-container>
+<hr>
+</div>
+
+ 
+<p>option 3 : ngTemplateOutlet</p>
+  <ng-container *ngTemplateOutlet="greenState" ></ng-container>
+  <p>use of the conditional expression in ngTemplateOutlet</p>
+  <ng-container *ngTemplateOutlet="state=='red'?redState:state=='green'?greenState:nurmalState"></ng-container>
+</div>
+
+<p>template context</p>
+<p>just accessing a variable from the outer context</p>
+<ng-container *ngTemplateOutlet='someTemplate'></ng-container>
+<p>contex passed to a template with input variables</p>
+<ng-container *ngTemplateOutlet='templateWithInputVariables;context:someCustomer'></ng-container>
+
+<p>using ngSwitch with ng-container and ngTemplateOutlet</p>
+<!-- <ng-container [ngSwitch]="state">
+  <ng-container ngSwitchCase="red" *ngTemplateOutlet="redState"></ng-container>
+  <ng-container ngSwitchCase="green" *ngTemplateOutlet="greenState"></ng-container>
+
+  <ng-container ngSwitchDefault *ngTemplateOutlet="nurmalState"></ng-container>
+</ng-container> -->
+<div [ngSwitch]="state">
+  <div *ngSwitchCase="red">
+     RED
+  </div>
+  <div *ngSwitchCase="green">
+      GREEN
+   </div>
+  <div *ngSwitchDefault>
+      NORMAL
+    
+  </div>
+
+<br>
+<ul 
+    [ngSwitch]="state"> 
+
+  <li *ngSwitchCase="'red'"  > {{state}}
+    <ng-container *ngTemplateOutlet='redState' ></ng-container>  
+  </li>
+  <li *ngSwitchCase="'green'"   > {{state}} 
+      <ng-container *ngTemplateOutlet='greenState' ></ng-container> </li>
+  <li *ngSwitchDefault>
+    DEF
+      <ng-container *ngTemplateOutlet='nurmalState' ></ng-container>
+
+  </li> 
+ 
+</ul>`
+
+
+
+</div>
+
+
+<!-- templates can be defined anywhere on the page
+regardless where they are going to be defined, they are going to render
+on the html element where *ngIf or *ngSwitch are attached or where ng-container 
+is used in cases where adding html element (such as div) is not suitable=/acceptable -->
+<p>I am somewhere before the template</p>
+<ng-template #myTemplate>
+  <span>Loading ...</span>
+</ng-template>
+<p>I am somewhere after the template</p>
+
+<ng-template #abnormalState>
+  <div *ngIf="state === 'green' then greenState else redState"></div>
+</ng-template>
+<ng-template #redState>
+  <span class="redState"> the state is red</span>
+</ng-template>
+<ng-template #greenState>
+  <span class="greenState"> the state is green</span>
+</ng-template>
+<ng-template #nurmalState>
+  <span>just NORMAL</span>
+</ng-template>
+
+
+<ng-template #someTemplate>
+  <p> The value of someNumeber is : {{someNumber}}
+which demonstrates that the template 'someTemplate' 
+has access to the outer context where it's embeded
+where the 'someNumber' variable is defined
+  </p>
+</ng-template>
+
+<ng-template #templateWithInputVariables
+let-name="customerName" let-gender="customerGender">
+<p>name : {{name}}</p>
+<p>gender : {{gender}}</p>
+
+</ng-template>

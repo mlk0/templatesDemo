@@ -1,4 +1,4 @@
-    <p>
+<p>
   template-ref-demo works! {{isDisplayed}} and {{state}}
 </p>
 
@@ -17,15 +17,16 @@
 
     </div>
   </div>
- 
 
-option 1: load alternative content in a div when some condition is fulfilled in the *ngIf or *ngSwitch statement 
-<br>  <div *ngIf="!displayLoadingTemplate else myTemplate">
+
+  option 1: load alternative content in a div when some condition is fulfilled in the *ngIf or *ngSwitch statement
+  <br>
+  <div *ngIf="!displayLoadingTemplate else myTemplate">
     It's all good, nothing is being loaded
   </div>
- <div>
-<hr>
-<!-- <div>
+  <div>
+    <hr>
+    <!-- <div>
     <p>ng-switch used as a condition</p>
     <div [ngSwitch]="state">
       <div *ngSwitchCase="red">
@@ -34,25 +35,25 @@ option 1: load alternative content in a div when some condition is fulfilled in 
     </div>
 </div> -->
 
-  
-<p>
-    option 2: ng-container sample
-</p>
-<!-- the good thing with ng-container is that it does not require
+
+    <p>
+      option 2: ng-container sample
+    </p>
+    <!-- the good thing with ng-container is that it does not require
 some html element in the DOM in order to be target to *ngIf like in the 
 previous case where div element is used and this will always stay in the DOM in ViewSource -->
-<ng-container *ngIf="state === 'normal' else abnormalState">
-you can see me if the state = "normal"
-the contenet of the template will render without introduction of addtional parent element in the DOM
-</ng-container>
-<hr>
-</div>
+    <ng-container *ngIf="state === 'normal' else abnormalState">
+      you can see me if the state = "normal" the contenet of the template will render without introduction of addtional parent
+      element in the DOM
+    </ng-container>
+    <hr>
+  </div>
 
- 
-<p>option 3 : ngTemplateOutlet</p>
-  <ng-container *ngTemplateOutlet="greenState" ></ng-container>
+
+  <p>option 3 : ngTemplateOutlet</p>
+  <ng-container *ngTemplateOutlet="greenState"></ng-container>
   <p>use of the conditional expression in ngTemplateOutlet</p>
-  <ng-container *ngTemplateOutlet="state=='red'?redState:state=='green'?greenState:nurmalState"></ng-container>
+  <ng-container *ngTemplateOutlet="state=='red'?redState:state=='green'?greenState:normalState"></ng-container>
 </div>
 
 <p>template context</p>
@@ -66,39 +67,57 @@ the contenet of the template will render without introduction of addtional paren
   <ng-container ngSwitchCase="red" *ngTemplateOutlet="redState"></ng-container>
   <ng-container ngSwitchCase="green" *ngTemplateOutlet="greenState"></ng-container>
 
-  <ng-container ngSwitchDefault *ngTemplateOutlet="nurmalState"></ng-container>
+  <ng-container ngSwitchDefault *ngTemplateOutlet="normalState"></ng-container>
 </ng-container> -->
 <div [ngSwitch]="state">
-  <div *ngSwitchCase="red">
-     RED
+  <div *ngSwitchCase="'red'">
+    RED
   </div>
-  <div *ngSwitchCase="green">
-      GREEN
-   </div>
+  <div *ngSwitchCase="'green'">
+    GREEN
+  </div>
   <div *ngSwitchDefault>
-      NORMAL
-    
+    NORMAL
+
   </div>
 
-<br>
-<ul 
-    [ngSwitch]="state"> 
+  <p>ngSwitch impelmentation with ul</p>
+  <ul [ngSwitch]="state">
+    <li *ngSwitchCase="'red'"> {{state}}
+      <ng-container *ngTemplateOutlet='redState'></ng-container>
+    </li>
+    <li *ngSwitchCase="'green'"> {{state}}
+      <ng-container *ngTemplateOutlet='greenState'></ng-container>
+    </li>
+    <li *ngSwitchDefault>
+      DEF
+      <ng-container *ngTemplateOutlet='normalState'></ng-container>
+    </li>
+  </ul>`
+  <p>implementation with only ng-container</p>
 
-  <li *ngSwitchCase="'red'"  > {{state}}
-    <ng-container *ngTemplateOutlet='redState' ></ng-container>  
-  </li>
-  <li *ngSwitchCase="'green'"   > {{state}} 
-      <ng-container *ngTemplateOutlet='greenState' ></ng-container> </li>
-  <li *ngSwitchDefault>
-    DEF
-      <ng-container *ngTemplateOutlet='nurmalState' ></ng-container>
+  <ng-container [ngSwitch]="state">
+    <ng-container *ngSwitchCase="'red'">
+      <ng-container *ngTemplateOutlet='redState'></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="'green'">
+      <ng-container *ngTemplateOutlet='greenState'></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      <ng-container *ngTemplateOutlet='normalState'></ng-container>
+    </ng-container>
+  </ng-container>
+<p>since it is not allowed to have 2 template directives on a single element
+  the nesting of ng-containers is being made 
+</p>
 
-  </li> 
- 
-</ul>`
+<p>it seems that the only alternative for ngTemplateOutlet to use an expression
+  is to use a ternary operator to alternate between 2 states
+</p>
+<ng-container *ngTemplateOutlet="state=='red'?redState:greenState"></ng-container>
 
-
-
+<p>so the ternary operator may become more complex to alternate between 3 states instead</p>
+<ng-container *ngTemplateOutlet="state=='red' ? redState : (state=='green'? greenState:normalState)"></ng-container>
 </div>
 
 
@@ -121,22 +140,32 @@ is used in cases where adding html element (such as div) is not suitable=/accept
 <ng-template #greenState>
   <span class="greenState"> the state is green</span>
 </ng-template>
-<ng-template #nurmalState>
+<ng-template #normalState>
   <span>just NORMAL</span>
 </ng-template>
 
 
 <ng-template #someTemplate>
-  <p> The value of someNumeber is : {{someNumber}}
-which demonstrates that the template 'someTemplate' 
-has access to the outer context where it's embeded
-where the 'someNumber' variable is defined
+  <p> The value of someNumeber is : {{someNumber}} which demonstrates that the template 'someTemplate' has access to the outer
+    context where it's embeded where the 'someNumber' variable is defined
   </p>
 </ng-template>
 
-<ng-template #templateWithInputVariables
-let-name="customerName" let-gender="customerGender">
-<p>name : {{name}}</p>
-<p>gender : {{gender}}</p>
+<ng-template #templateWithInputVariables let-name="customerName" let-gender="customerGender">
+  <p>name : {{name}}</p>
+  <p>gender : {{gender}}</p>
 
 </ng-template>
+
+
+<div>
+  <p>passing a template to a componenent</p>
+  <p>nothing was passed</p>
+  <app-template-as-input></app-template-as-input>
+  <p>normal template was passed</p>
+  <app-template-as-input [alternativeTemplate]="normalState"></app-template-as-input>
+
+  <p>pass a template reference that is decided in runtime</p>
+  <app-template-as-input [alternativeTemplate]="state=='red' ? redState : (state=='green' ? greenState : normalState)"
+  ></app-template-as-input>
+</div>

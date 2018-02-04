@@ -1,0 +1,8 @@
+<p>
+  template-as-input works!
+</p>
+<ng-template #defaultTemplate>
+  I am the original template
+</ng-template>
+<p>the content below will either be the default template or the template passed as a reference through the input variable to this componenet</p>
+<ng-content *ngTemplateOutlet="alternativeTemplate?alternativeTemplate:defaultTemplate"></ng-content>
